@@ -9,6 +9,16 @@ fork entries are assembled from fragments in `changelog.d/` with
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-v9.1.4'></a>
+## v9.1.4 - 2026-07-12
+
+### Fixed
+
+- `Data.Number.isNaN` links (the FFI key was spelled `isNan`, so pslua dropped
+  the export and calls failed at runtime on a nil field) and detects NaN via
+  IEEE self-inequality (`x ~= x`) instead of comparing `tostring` spellings,
+  which are not canonical across NaN signs and libcs.
+
 ## v9.1.3 - 2026-06-15
 
 ### Fixed
