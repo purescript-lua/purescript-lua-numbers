@@ -1,6 +1,9 @@
 -- Regression guard for the Lua 5.1 FFI of Data.Number.
 -- Expected values come from the Number.purs docstrings = the JS contract.
 --
+--   #8  isNaN: the FFI key is spelled isNaN (was: isNan, so the export never
+--       linked), and NaN is detected via IEEE self-inequality (was: comparing
+--       tostring spellings, which are not canonical across signs/libcs).
 --   #93 fromStringImpl: Nothing on parse failure (was: Just nil), parseFloat
 --       leading-prefix tolerance, and the real isFinite predicate.
 --   #94 sign: returns the Number 0 for x == 0 (was: the boolean true).
@@ -21,6 +24,16 @@ end
 
 local nan = 0 / 0
 local function isNaN(x) return x ~= x end
+
+-- #8 isNaN
+check("isNaN links (key spelled isNaN)", type(M.isNaN) == "function", "type=" .. type(M.isNaN))
+check("isNaN NaN", M.isNaN(nan) == true, tostring(M.isNaN(nan)))
+check("isNaN -NaN (sign-flipped spelling)", M.isNaN(-nan) == true, tostring(M.isNaN(-nan)))
+check("isNaN (inf - inf)", M.isNaN(math.huge - math.huge) == true, tostring(M.isNaN(math.huge - math.huge)))
+check("isNaN 0 is false", M.isNaN(0) == false, tostring(M.isNaN(0)))
+check("isNaN 1.5 is false", M.isNaN(1.5) == false, tostring(M.isNaN(1.5)))
+check("isNaN inf is false", M.isNaN(math.huge) == false, tostring(M.isNaN(math.huge)))
+check("isNaN -inf is false", M.isNaN(-math.huge) == false, tostring(M.isNaN(-math.huge)))
 
 -- #94 sign
 check("sign 0 is the Number 0 (not a boolean)", type(M.sign(0)) == "number" and M.sign(0) == 0,

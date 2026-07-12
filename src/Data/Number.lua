@@ -1,6 +1,6 @@
 return {
   nan = (0 / 0),
-  isNan = (function(x) return tostring(x) == tostring(0 / 0) end),
+  isNaN = (function(x) return x ~= x end),
   infinity = (math.huge),
   isFinite = (function(x) return x == x and x ~= math.huge and x ~= -math.huge end),
   abs = (math.abs),
