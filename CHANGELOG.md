@@ -9,6 +9,17 @@ fork entries are assembled from fragments in `changelog.d/` with
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-v9.1.5'></a>
+## v9.1.5 - 2026-07-13
+
+### Fixed
+
+- `fromStringImpl` matches its `Fn4` declaration: the Lua entry is a single
+  4-ary function (previously it was a chain of nested single-argument
+  closures, so `Data.Number.fromString` returned a function instead of a
+  `Maybe Number` — Lua silently drops the surplus arguments of the n-ary
+  `runFn4` call).
+
 <a id='changelog-v9.1.4'></a>
 ## v9.1.4 - 2026-07-12
 
