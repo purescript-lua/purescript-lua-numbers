@@ -42,20 +42,15 @@ return {
   sqrt = (math.sqrt),
   tan = (math.tan),
   trunc = (function(x) return x < 0 and math.ceil(x) or math.floor(x) end),
-  fromStringImpl = (function(str)
-    return function(isFinite)
-      return function(just)
-        return function(nothing)
-          -- Mirror JS parseFloat: a leading-numeric prefix is parsed and
-          -- trailing junk (and a whitespace prefix) is tolerated. Guard against
-          -- a failed parse — the old code wrapped tonumber's nil in Just — and
-          -- use the supplied isFinite predicate so non-finite results are Nothing.
-          local prefix = str:match("^%s*([%-+]?%d*%.?%d+[eE]?[%-+]?%d*)")
-          local x = prefix and tonumber(prefix) or nil
-          if x ~= nil and isFinite(x) then return just(x) end
-          return nothing
-        end
-      end
-    end
+  fromStringImpl = (function(str, isFinite, just, nothing)
+    -- Declared Fn4, so the entry is a single 4-ary function.
+    -- Mirror JS parseFloat: a leading-numeric prefix is parsed and
+    -- trailing junk (and a whitespace prefix) is tolerated. Guard against
+    -- a failed parse — the old code wrapped tonumber's nil in Just — and
+    -- use the supplied isFinite predicate so non-finite results are Nothing.
+    local prefix = str:match("^%s*([%-+]?%d*%.?%d+[eE]?[%-+]?%d*)")
+    local x = prefix and tonumber(prefix) or nil
+    if x ~= nil and isFinite(x) then return just(x) end
+    return nothing
   end)
 }

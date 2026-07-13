@@ -50,10 +50,12 @@ check("min 1 NaN is NaN", isNaN(M.min(1)(nan)), tostring(M.min(1)(nan)))
 check("min NaN 1 is NaN", isNaN(M.min(nan)(1)), tostring(M.min(nan)(1)))
 check("min 3 7 == 3", M.min(3)(7) == 3, tostring(M.min(3)(7)))
 
--- #93 fromString (via the Fn4-style curried FFI)
+-- #93 fromString. fromStringImpl is declared `Fn4`, so the Lua entry is a
+-- 4-ary function called with all arguments at once (`runFn4` and the
+-- compiler's uncurried lift both call it that way).
 local function just(x) return {tag = "just", value = x} end
 local nothing = {tag = "nothing"}
-local function fromString(s) return M.fromStringImpl(s)(M.isFinite)(just)(nothing) end
+local function fromString(s) return M.fromStringImpl(s, M.isFinite, just, nothing) end
 local function isJust(m, v) return type(m) == "table" and m.tag == "just" and m.value == v end
 local function isNothing(m) return type(m) == "table" and m.tag == "nothing" end
 
